@@ -1,0 +1,72 @@
+
+.lmain_container{
+    width: 100vw;
+    height: 100vh;
+    gap: 20px;
+}
+
+.lmain_container textarea{
+    border: 2px solid black;
+    width: 60%;
+    height: 50%;
+    padding: 5%;
+    font-size: 20px;
+}
+
+.lmain_button{
+    width: 70%;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+    height: 50px;
+    padding: 5px;
+    border: none;
+  }
+
+  .lmain_button:disabled{
+    width: 70%;
+    font-size: 20px;
+    background-color: gray;
+    color: white;
+    height: 50px;
+    padding: 5px;
+    border: none;
+  }
+
+
+  .habits_container{
+    margin-left: 20px;
+    gap:50px;
+  }
+
+  .habit_container{
+    width: 100%;
+    gap: 20px;
+  }
+
+  .habit_container span{
+    max-width: 60%;
+  }
+
+  input[type="checkbox"] {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    margin: 6px;
+    padding: 0;
+    border: 2px solid black;
+    appearance: none;
+    background-color: transparent;
+    outline: none;
+    transition: outline 0.1s;
+  }
+
+  input[type="checkbox"]:checked {
+    background-size: cover;
+    padding: 2px;
+  }
+  
+  input[type="checkbox"]:not(:disabled):checked {
+    border-color: var(--checkbox-checked-color);
+    background-color: black;
+  }
