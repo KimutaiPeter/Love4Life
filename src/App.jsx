@@ -12,6 +12,7 @@ import Main_app from './pages/main'
 function App() {
   const [authO, set_authO] = useState(false)
   const [views, set_view] = useState('auth')
+  const [render_ready,set_render_ready]=useState(false)
 
   useEffect(() => {
 
@@ -25,8 +26,10 @@ function App() {
         var authenticated = gapi.auth2.getAuthInstance().isSignedIn.get("331595037617-uvo5j45mn27oi3e5cgl6g69cu9s2e0f8.apps.googleusercontent.com")
         set_authO(authenticated)
         console.log("Auth change", authenticated)
+        
       }
       gapi.auth2.getAuthInstance().isSignedIn.listen(handle_auth_change())
+      set_render_ready(true)
     }
 
 
@@ -60,21 +63,33 @@ function App() {
     set_view(page)
   }
 
-  return (
-    <>
-      {(() => {
-        if (views == 'auth') {
-          return (
-            <Auth set_views={set_views}/>
-          )
-        }else if(views =="setup"){
-          return  (<Setup set_views={set_views}></Setup>)
-        }else if(views=="main"){
-          return (<Main_app set_views={set_views}/>)
-        }
-      })()}
-    </>
-  )
+  if(render_ready){
+    return (
+      <>
+        {(() => {
+          if (views == 'auth') {
+            return (
+              <Auth set_views={set_views}/>
+            )
+          }else if(views =="setup"){
+            return  (<Setup set_views={set_views}></Setup>)
+          }else if(views=="main"){
+            return (<Main_app set_views={set_views}/>)
+          }
+        })()}
+      </>
+    )
+  }else{
+    return(
+      <>
+        <center>
+          <h1>Loading...</h1>
+        </center>
+      </>
+    )
+  }
+
+  
 }
 
 export default App

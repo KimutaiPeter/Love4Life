@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Live Life Love',
-        short_name: 'Live Life Love',
+        name: 'Love4Life',
+        short_name: 'Love4Life',
         theme_color: '#ffffff',
         icons: [
             {

@@ -1,0 +1,1 @@
+install separately: npm i react-swipeable-views --legacy-peer-deps

@@ -97,9 +97,9 @@ async function drive_setup(email, habits) {
 }
 
 function log_entry(file_id,log){
-  return new Promise((resolve,reject)=>{
+  return new Promise(async(resolve,reject)=>{
     //Write habits to the habits sheet
-    var accessToken = gapi.auth.getToken().access_token;
+    var accessToken =await gapi.auth.getToken().access_token;
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${file_id}/values/${"Log!A:Z"}:append?valueInputOption=USER_ENTERED`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json', },
@@ -111,25 +111,66 @@ function log_entry(file_id,log){
   })
 }
 
+function habits_entry(file_id,range,data){
+  return new Promise(async(resolve,reject)=>{
+    //Write habits to the habits sheet
+    var accessToken =await gapi.auth.getToken().access_token;
+    console.log(range)
+    if(range==null){
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${file_id}/values/${"Sheet1!A:Z"}:append?valueInputOption=USER_ENTERED`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json', },
+        body: JSON.stringify({ values: [data] }),
+      })
+        .then((response) => response.json())
+        .then((data) => { console.log('First Entry habit made', data); resolve(data.updates) })
+        .catch((error) => { console.error('Error while making entry habits', error); reject(false)});
+    }else{
+      
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${file_id}/values/${range}?valueInputOption=USER_ENTERED`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json', },
+        body: JSON.stringify({ values: [data] }),
+      })
+        .then((response) => response.json())
+        .then((data) => { console.log('Entry habit made', data); resolve(data) })
+        .catch((error) => { console.error('Error while making entry habits', error); reject(false)});
+    }
+    
+  })
+}
+
 
 function read_habits(doc_id) {
   return new Promise(async (resolve, reject) => {
-    var accessToken = await gapi.auth.getToken().access_token;
+    
+    gapi.auth2.getAuthInstance().then(function(auth) {
+      if (auth.isSignedIn.get()) {
+        //var token = auth.currentUser.get().getIdToken();
+        var accessToken = gapi.auth.getToken().access_token;
+        fetch(`https://sheets.googleapis.com/v4/spreadsheets/${doc_id}/values/${"Sheet1!A1:Z1"}?valueRenderOption=FORMATTED_VALUE`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            //console.log('Habits', data);
+            resolve(data.values)
+          })
+          .catch((error) => {
+            console.error('Error querying spreadsheet data:', error);
+          });
+        
+      } else {
+        // Handle the case where the user is not signed in
+        console.log("User not siggned in")
+      }
+    });
     // Use the access token to query data from the spreadsheet
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${doc_id}/values/${"Main!C1:Z1"}?valueRenderOption=FORMATTED_VALUE`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Habits', data.values);
-        resolve(data.values)
-      })
-      .catch((error) => {
-        console.error('Error querying spreadsheet data:', error);
-      });
+    
+    
   })
 }
 
@@ -181,5 +222,5 @@ function get_data() {
 }
 
 
-const sheets = { listMajors, drive_setup, read_habits,log_entry }
+const sheets = { listMajors, drive_setup, read_habits,log_entry,get_data,habits_entry }
 export default sheets
